@@ -1,23 +1,21 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const cohortSchema = new Schema({
+const studentsSchema = new Schema({
 
-    firstName: String,
-    lastName: String,
-    email: String,
-    phone: String,
-    linkedinUrl: String,
-    languages: [String],
-    program: String,
-    background: String,
-    image: String,
-    projects: [String],
-    cohort: {
-        $oid: String
-    }
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String, required: true },
+    linkedinUrl: { type: String, default: '' },
+    languages: { type: [String], enum: ["English", "Spanish", "French", "German", "Portuguese", "Dutch", "Other"] },
+    program: { type: String, enum: ["Web Dev", "UX/UI", "Data Analytics", "Cybersecurity"] },
+    background: { type: String, default: '' },
+    image: { type: String, default: 'https://i.imgur.com/r8bo8u7.png' },
+    projects: [],
+    _cohort: { type: Schema.Types.ObjectId, ref: _id.Cohorts },
 });
 
-const Cohort = mongoose.model('Cohort', cohortSchema)
+const Students = mongoose.model('Students', studentsSchema)
 
-module.exports = Cohort;
+module.exports = Students;
