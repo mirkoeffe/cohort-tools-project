@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Cohorts = require("./cohorts.model");
 
 const studentsSchema = new Schema({
 
@@ -13,7 +14,7 @@ const studentsSchema = new Schema({
     background: { type: String, default: '' },
     image: { type: String, default: 'https://i.imgur.com/r8bo8u7.png' },
     projects: [],
-    _cohort: { type: Schema.Types.ObjectId, ref: _id.Cohorts },
+    cohort: { type: Schema.Types.ObjectId, ref: 'Cohorts' },
 });
 
 const Students = mongoose.model('Students', studentsSchema)
