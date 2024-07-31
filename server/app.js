@@ -34,7 +34,7 @@ mongoose
 
 app.use(
   cors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'http://localhost:5174'],
   })
 );
 
@@ -51,31 +51,34 @@ app.get("/docs", (req, res) => {
   res.sendFile(__dirname + "/views/docs.html");
 });
 
-app.get("/api/cohorts", (req, res) => {
-  Cohorts.find({})
-    .then((cohorts) => {
-      console.log(`Found ${cohorts.length}`);
-      res.json(cohorts);
+// STUDENTS ROUTES
+
+app.post("/api/students", (req, res) => {
+  Students.create({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    phone: req.body.phone,
+    linkedinUrl: req.body.linkedinUrl,
+    languages: req.body.languages,
+    program: req.body.program,
+    background: req.body.background,
+    image: req.body.image,
+    projects: req.body.projects,
+    cohort: req.body.cohort,
+  })
+    .then((student) => {
+      console.log("Created new student:", student);
+      res.status(201).json(student);
     })
     .catch((error) => res.status(500).json({ error }));
 })
-
 
 app.get("/api/students", (req, res) => {
   Students.find({})
     .populate("cohort")
     .then((students) => {
       console.log(`Found ${students.length}`);
-      res.json(students);
-    })
-    .catch((error) => res.status(500).json({ error }));
-})
-
-app.get("/api/students/cohort/:cohortId", (req, res) => {
-  Students.find({ cohort: req.params.cohortId })
-    .populate("cohort")
-    .then((students) => {
-      console.log(`Found "${students.length}" in cohort ${req.params.cohortId}`);
       res.json(students);
     })
     .catch((error) => res.status(500).json({ error }));
@@ -91,6 +94,16 @@ app.get("/api/students/:studentsId", (req, res) => {
     .catch((error) => res.status(500).json({ error }));
 })
 
+app.get("/api/students/cohort/:cohortId", (req, res) => {
+  Students.find({ cohort: req.params.cohortId })
+    .populate("cohort")
+    .then((students) => {
+      console.log(`Found "${students.length}" in cohort ${req.params.cohortId}`);
+      res.json(students);
+    })
+    .catch((error) => res.status(500).json({ error }));
+})
+
 app.put("/api/students/:studentsId", (req, res) => {
   Students.findByIdAndUpdate(req.params.studentsId, req.body, { new: true })
     .populate("cohort")
@@ -99,6 +112,75 @@ app.put("/api/students/:studentsId", (req, res) => {
       console.log("Updated student:", updatedStudent);
 
       res.json(updatedStudent);
+    })
+    .catch((error) => res.status(500).json({ error }));
+})
+
+app.delete("/api/students/:studentsId", (req, res) => {
+  Students.findByIdAndDelete(req.params.studentsId)
+    .then((deletedStudent) => {
+      if (!deletedStudent) return res.status(404).json({ message: "Student not found" });
+      console.log("Deleted student:", deletedStudent);
+
+      res.json(deletedStudent);
+    })
+    .catch((error) => res.status(500).json({ error }));
+})
+
+// COHORT ROUTES
+
+app.post("/api/cohorts", (req, res) => {
+  Cohorts.create({
+    name: req.body.name,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    location: req.body.location,
+    program: req.body.program,
+    students: req.body.students,
+  })
+    .then((cohort) => {
+      console.log("Created new cohort:", cohort);
+      res.status(201).json(cohort);
+    })
+    .catch((error) => res.status(500).json({ error }));
+})
+
+app.get("/api/cohorts", (req, res) => {
+  Cohorts.find({})
+    .then((cohorts) => {
+      console.log(`Found ${cohorts.length}`);
+      res.json(cohorts);
+    })
+    .catch((error) => res.status(500).json({ error }));
+})
+
+app.get("/api/cohorts/:cohortId", (req, res) => {
+  Cohorts.findById(req.params.cohortId)
+    .then((cohort) => {
+      if (!cohort) return res.status(404).json({ message: "Cohort not found" });
+      res.json(cohort);
+    })
+    .catch((error) => res.status(500).json({ error }));
+})
+
+app.put("/api/cohorts/:cohortId", (req, res) => {
+  Cohorts.findByIdAndUpdate(req.params.cohortId, req.body, { new: true })
+    .then((updatedCohort) => {
+      if (!updatedCohort) return res.status(404).json({ message: "Cohort not found" });
+      console.log("Updated cohort:", updatedCohort);
+
+      res.json(updatedCohort);
+    })
+    .catch((error) => res.status(500).json({ error }));
+})
+
+app.delete("/api/cohorts/:cohortId", (req, res) => {
+  Cohorts.findByIdAndDelete(req.params.cohortId)
+    .then((deletedCohort) => {
+      if (!deletedCohort) return res.status(404).json({ message: "Cohort not found" });
+      console.log("Deleted cohort:", deletedCohort);
+
+      res.json(deletedCohort);
     })
     .catch((error) => res.status(500).json({ error }));
 })
