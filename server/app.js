@@ -91,11 +91,13 @@ app.get("/api/students/:studentsId", (req, res) => {
     .catch((error) => res.status(500).json({ error }));
 })
 
-app.patch("/api/students/:studentsId", (req, res) => {
+app.put("/api/students/:studentsId", (req, res) => {
   Students.findByIdAndUpdate(req.params.studentsId, req.body, { new: true })
     .populate("cohort")
     .then((updatedStudent) => {
       if (!updatedStudent) return res.status(404).json({ message: "Student not found" });
+      console.log("Updated student:", updatedStudent);
+
       res.json(updatedStudent);
     })
     .catch((error) => res.status(500).json({ error }));
