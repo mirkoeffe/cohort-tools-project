@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose')
 
 const cohortsSchema = new Schema({
 
@@ -8,7 +7,7 @@ const cohortsSchema = new Schema({
     program: { type: String, enum: ["Web Dev", "UX/UI", "Data Analytics", "Cybersecurity"] },
     format: { type: String, enum: ["Full Time", "Part Time"] },
     campus: { type: String, enum: ["Madrid", "Barcelona", "Miami", "Paris", "Berlin", "Amsterdam", "Lisbon", "Remote"] },
-    startDate: { type: Date, default: new Date },
+    startDate: { type: Date, default: Date.now },
     endDate: { type: Date },
     inProgress: { type: Boolean, default: false },
     programManager: { type: String, required: true },
@@ -16,6 +15,5 @@ const cohortsSchema = new Schema({
     totalHours: { type: Number, default: 360 }
 });
 
-const Cohorts = mongoose.model('Cohorts', cohortsSchema)
 
-module.exports = Cohorts;
+module.exports = model('Cohorts', cohortsSchema);
