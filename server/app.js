@@ -55,17 +55,7 @@ app.get("/docs", (req, res) => {
 
 app.post("/api/students", (req, res) => {
   Students.create({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    phone: req.body.phone,
-    linkedinUrl: req.body.linkedinUrl,
-    languages: req.body.languages,
-    program: req.body.program,
-    background: req.body.background,
-    image: req.body.image,
-    projects: req.body.projects,
-    cohort: req.body.cohort,
+    ...req.body,
   })
     .then((student) => {
       console.log("Created new student:", student);
