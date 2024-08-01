@@ -3,7 +3,7 @@ const router = require('express').Router();
 const Cohorts = require('../models/cohorts.model');
 const Students = require('../models/students.model');
 
-router.post("/students", (req, res) => {
+router.post("/students", (req, res, next) => {
     Students.create({
         ...req.body,
     })
@@ -11,48 +11,48 @@ router.post("/students", (req, res) => {
             console.log("Created new student:", student);
             res.status(201).json(student);
         })
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => next(error));
 })
 
 
 
-router.get("/students", (req, res) => {
+router.get("/students", (req, res, next) => {
     Students.find({})
         .populate("cohort")
         .then((students) => {
             console.log(`Found ${students.length}`);
             res.json(students);
         })
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => next(error));
 })
 
 
 
-router.get("/students/:studentsId", (req, res) => {
+router.get("/students/:studentsId", (req, res, next) => {
     Students.findById(req.params.studentsId)
         .populate("cohort")
         .then((student) => {
             if (!student) return res.status(404).json({ message: "Student not found" });
             res.json(student);
         })
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => next(error));
 })
 
 
 
-router.get("/students/cohort/:cohortId", (req, res) => {
+router.get("/students/cohort/:cohortId", (req, res, next) => {
     Students.find({ cohort: req.params.cohortId })
         .populate("cohort")
         .then((students) => {
             console.log(`Found "${students.length}" in cohort ${req.params.cohortId}`);
             res.json(students);
         })
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => next(error));
 })
 
 
 
-router.put("/students/:studentsId", (req, res) => {
+router.put("/students/:studentsId", (req, res, next) => {
     Students.findByIdAndUpdate(req.params.studentsId, req.body, { new: true })
         .populate("cohort")
         .then((updatedStudent) => {
@@ -61,12 +61,12 @@ router.put("/students/:studentsId", (req, res) => {
 
             res.json(updatedStudent);
         })
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => next(error));
 })
 
 
 
-router.delete("/students/:studentsId", (req, res) => {
+router.delete("/students/:studentsId", (req, res, next) => {
     Students.findByIdAndDelete(req.params.studentsId)
         .then((deletedStudent) => {
             if (!deletedStudent) return res.status(404).json({ message: "Student not found" });
@@ -74,7 +74,7 @@ router.delete("/students/:studentsId", (req, res) => {
 
             res.json(deletedStudent);
         })
-        .catch((error) => res.status(500).json({ error }));
+        .catch((error) => next(error));
 })
 
 module.exports = router;

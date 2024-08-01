@@ -17,5 +17,6 @@ app.use("/api", cohortsRouter);
 const studentsRouter = require("./routes/students.routes");
 app.use("/api", studentsRouter);
 
+require("./error-handling")(app);
 
 module.exports = app;
