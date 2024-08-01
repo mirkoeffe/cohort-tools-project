@@ -1,3 +1,7 @@
+require('dotenv').config()
+
+require("./db/db");
+
 const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
@@ -27,10 +31,10 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-mongoose
+/* mongoose
   .connect("mongodb://127.0.0.1:27017/cohort-tools-api")
   .then(x => console.log(`Connected to Database: "${x.connections[0].name}"`))
-  .catch(err => console.error("Error connecting to MongoDB", err));
+  .catch(err => console.error("Error connecting to MongoDB", err)); */
 
 app.use(
   cors({
@@ -121,12 +125,7 @@ app.delete("/api/students/:studentsId", (req, res) => {
 
 app.post("/api/cohorts", (req, res) => {
   Cohorts.create({
-    name: req.body.name,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
-    location: req.body.location,
-    program: req.body.program,
-    students: req.body.students,
+    ...req.body,
   })
     .then((cohort) => {
       console.log("Created new cohort:", cohort);
@@ -180,3 +179,4 @@ app.delete("/api/cohorts/:cohortId", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
