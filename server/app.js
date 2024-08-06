@@ -1,7 +1,10 @@
 require('dotenv').config()
 
+
 const express = require('express');
 const app = express();
+
+const isAuthenticated = require("./middleware/jwt.middleware");
 
 require("./db/");
 
@@ -16,6 +19,12 @@ app.use("/api", cohortsRouter);
 
 const studentsRouter = require("./routes/students.routes");
 app.use("/api", studentsRouter);
+
+const authRouter = require('./routes/auth.routes');
+app.use('/auth', authRouter);
+
+const userRouter = require("./routes/user.routes");
+app.use("/api", isAuthenticated, userRouter);
 
 require("./error-handling")(app);
 
